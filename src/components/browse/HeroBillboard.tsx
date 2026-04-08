@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDetailModalStore } from "@/store/detailModalStore";
 
 const HeroBillboard = () => {
+  const { openModal } = useDetailModalStore();
   const { data, isLoading } = useQuery({
     queryKey: ["trending"],
     queryFn: getTrending,
