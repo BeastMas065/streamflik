@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      my_list: {
+        Row: {
+          backdrop_path: string | null
+          created_at: string
+          genre_ids: Json | null
+          id: string
+          media_type: string
+          overview: string | null
+          poster_path: string | null
+          profile_id: string
+          release_date: string | null
+          title: string
+          tmdb_id: number
+          vote_average: number | null
+        }
+        Insert: {
+          backdrop_path?: string | null
+          created_at?: string
+          genre_ids?: Json | null
+          id?: string
+          media_type?: string
+          overview?: string | null
+          poster_path?: string | null
+          profile_id: string
+          release_date?: string | null
+          title: string
+          tmdb_id: number
+          vote_average?: number | null
+        }
+        Update: {
+          backdrop_path?: string | null
+          created_at?: string
+          genre_ids?: Json | null
+          id?: string
+          media_type?: string
+          overview?: string | null
+          poster_path?: string | null
+          profile_id?: string
+          release_date?: string | null
+          title?: string
+          tmdb_id?: number
+          vote_average?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "my_list_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_color: string
