@@ -26,6 +26,7 @@ const MovieCard = ({ item, index, totalVisible, isInList }: MovieCardProps) => {
   const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
   const { selectedProfile } = useProfileStore();
   const queryClient = useQueryClient();
+  const { openModal } = useDetailModalStore();
 
   const title = item.title ?? item.name ?? "Untitled";
   const year = (item.release_date ?? item.first_air_date ?? "").slice(0, 4);
