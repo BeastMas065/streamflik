@@ -3,6 +3,7 @@ import { getTrending, TMDB_IMG, TMDBItem } from "@/services/tmdb";
 import { Play, Info } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDetailModalStore } from "@/store/detailModalStore";
 
 const HeroBillboard = () => {
   const { data, isLoading } = useQuery({
