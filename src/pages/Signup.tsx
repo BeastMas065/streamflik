@@ -6,29 +6,69 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
 const plans = [
-  {
-    id: "basic" as const,
-    name: "Basic",
-    price: "$6.99",
-    resolution: "480p",
-    devices: "1",
-  },
-  {
-    id: "standard" as const,
-    name: "Standard",
-    price: "$15.49",
-    resolution: "1080p",
-    devices: "2",
-    highlighted: true,
-  },
-  {
-    id: "premium" as const,
-    name: "Premium",
-    price: "$22.99",
-    resolution: "4K+HDR",
-    devices: "4",
-  },
+  { id: "basic" as const, name: "Basic", price: "$6.99", resolution: "480p", devices: "1" },
+  { id: "standard" as const, name: "Standard", price: "$15.49", resolution: "1080p", devices: "2", highlighted: true },
+  { id: "premium" as const, name: "Premium", price: "$22.99", resolution: "4K+HDR", devices: "4" },
 ];
+
+interface FloatingInputProps {
+  id: string;
+  type?: string;
+  value: string;
+  onChange: (v: string) => void;
+  label: string;
+  error?: string;
+  suffix?: React.ReactNode;
+}
+
+const FloatingInput = ({ id, type = "text", value, onChange, label, error, suffix }: FloatingInputProps) => (
+  <div>
+    <div className="relative">
+      <input
+        type={type}
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder=" "
+        className={`peer w-full h-[50px] bg-card rounded px-4 pt-5 pb-1 text-foreground outline-none border border-transparent focus:border-foreground/40 transition-colors text-base ${suffix ? "pr-12" : "pr-4"}`}
+      />
+      <label
+        htmlFor={id}
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm transition-all peer-focus:top-3 peer-focus:text-xs peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none"
+      >
+        {label}
+      </label>
+      {suffix && <div className="absolute right-4 top-1/2 -translate-y-1/2">{suffix}</div>}
+    </div>
+    {error && <p className="text-primary text-xs mt-1">{error}</p>}
+  </div>
+);
+
+const ProgressIndicator = ({ step }: { step: number }) => (
+  <div className="flex items-center justify-center gap-2 mb-8">
+    {[1, 2, 3, 4].map((s) => (
+      <div key={s} className="flex items-center gap-2">
+        <div
+          className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
+            s <= step ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"
+          }`}
+        >
+          {s < step ? <Check size={16} /> : s}
+        </div>
+        {s < 4 && <div className={`w-8 h-0.5 ${s < step ? "bg-primary" : "bg-card"}`} />}
+      </div>
+    ))}
+  </div>
+);
+
+const RedirectTimer = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const t = setTimeout(() => navigate("/profiles"), 2000);
+    return () => clearTimeout(t);
+  }, [navigate]);
+  return null;
+};
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -37,16 +77,11 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Step 1
   const [email, setEmail] = useState(searchParams.get("email") ?? "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  // Step 2
   const [selectedPlan, setSelectedPlan] = useState("standard");
-
-  // Step 3
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
@@ -72,10 +107,7 @@ const Signup = () => {
     return Object.keys(e).length === 0;
   };
 
-  const handleStep1 = () => {
-    if (validateStep1()) setStep(2);
-  };
-
+  const handleStep1 = () => { if (validateStep1()) setStep(2); };
   const handleStep2 = () => setStep(3);
 
   const handleStep3 = async () => {
@@ -95,7 +127,6 @@ const Signup = () => {
       return;
     }
 
-    // Update plan in profile
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       await supabase.from("profiles").update({ plan: selectedPlan }).eq("user_id", user.id);
@@ -104,53 +135,6 @@ const Signup = () => {
     setLoading(false);
     setStep(4);
   };
-
-  const FloatingInput = ({
-    id, type = "text", value, onChange, label, error, suffix,
-  }: {
-    id: string; type?: string; value: string; onChange: (v: string) => void; label: string; error?: string; suffix?: React.ReactNode;
-  }) => (
-    <div>
-      <div className="relative">
-        <input
-          type={type}
-          id={id}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder=" "
-          className="peer w-full h-[50px] bg-card rounded px-4 pt-5 pb-1 pr-12 text-foreground outline-none border border-transparent focus:border-foreground/40 transition-colors text-base"
-        />
-        <label
-          htmlFor={id}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-sm transition-all peer-focus:top-3 peer-focus:text-xs peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none"
-        >
-          {label}
-        </label>
-        {suffix && <div className="absolute right-4 top-1/2 -translate-y-1/2">{suffix}</div>}
-      </div>
-      {error && <p className="text-primary text-xs mt-1">{error}</p>}
-    </div>
-  );
-
-  // Progress indicator
-  const Progress = () => (
-    <div className="flex items-center justify-center gap-2 mb-8">
-      {[1, 2, 3, 4].map((s) => (
-        <div key={s} className="flex items-center gap-2">
-          <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
-              s <= step ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"
-            }`}
-          >
-            {s < step ? <Check size={16} /> : s}
-          </div>
-          {s < 4 && (
-            <div className={`w-8 h-0.5 ${s < step ? "bg-primary" : "bg-card"}`} />
-          )}
-        </div>
-      ))}
-    </div>
-  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden py-8">
@@ -166,7 +150,7 @@ const Signup = () => {
           STREAMFLIX
         </Link>
 
-        <Progress />
+        <ProgressIndicator step={step} />
 
         {errors.general && (
           <div className="bg-primary/20 border border-primary rounded p-3 mb-4 text-sm text-foreground">
@@ -175,7 +159,6 @@ const Signup = () => {
         )}
 
         <AnimatePresence mode="wait">
-          {/* STEP 1 */}
           {step === 1 && (
             <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="text-2xl font-bold text-foreground mb-2">Create a password to start your membership</h2>
@@ -198,7 +181,6 @@ const Signup = () => {
             </motion.div>
           )}
 
-          {/* STEP 2 */}
           {step === 2 && (
             <motion.div key="s2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="text-2xl font-bold text-foreground mb-2">Choose your plan</h2>
@@ -223,9 +205,7 @@ const Signup = () => {
                       <p>{plan.resolution}</p>
                       <p>{plan.devices} device{plan.devices !== "1" ? "s" : ""}</p>
                     </div>
-                    {selectedPlan === plan.id && (
-                      <Check className="mx-auto mt-2 text-primary" size={20} />
-                    )}
+                    {selectedPlan === plan.id && <Check className="mx-auto mt-2 text-primary" size={20} />}
                   </button>
                 ))}
               </div>
@@ -235,7 +215,6 @@ const Signup = () => {
             </motion.div>
           )}
 
-          {/* STEP 3 */}
           {step === 3 && (
             <motion.div key="s3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <h2 className="text-2xl font-bold text-foreground mb-2">Set up payment</h2>
@@ -254,7 +233,6 @@ const Signup = () => {
             </motion.div>
           )}
 
-          {/* STEP 4 */}
           {step === 4 && (
             <motion.div key="s4" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-8">
               <motion.div
@@ -267,7 +245,6 @@ const Signup = () => {
               </motion.div>
               <h2 className="text-3xl font-bold text-foreground mb-2">Welcome to Streamflix!</h2>
               <p className="text-muted-foreground">Redirecting you to browse...</p>
-              {/* Auto redirect */}
               <RedirectTimer />
             </motion.div>
           )}
@@ -282,15 +259,6 @@ const Signup = () => {
       </motion.div>
     </div>
   );
-};
-
-const RedirectTimer = () => {
-  const navigate = useNavigate();
-  useEffect(() => {
-    const t = setTimeout(() => navigate("/profiles"), 2000);
-    return () => clearTimeout(t);
-  }, [navigate]);
-  return null;
 };
 
 export default Signup;
