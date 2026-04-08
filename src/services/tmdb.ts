@@ -25,6 +25,18 @@ export const getPopularTV = () => tmdbFetch("/tv/popular");
 export const getByGenre = (genreId: number) =>
   tmdbFetch("/discover/movie", { with_genres: String(genreId) });
 
+// Detail endpoints
+export const getMovieDetails = (id: number) => tmdbFetch(`/movie/${id}`);
+export const getTVDetails = (id: number) => tmdbFetch(`/tv/${id}`);
+export const getMovieCredits = (id: number) => tmdbFetch(`/movie/${id}/credits`);
+export const getTVCredits = (id: number) => tmdbFetch(`/tv/${id}/credits`);
+export const getMovieSimilar = (id: number) => tmdbFetch(`/movie/${id}/similar`);
+export const getTVSimilar = (id: number) => tmdbFetch(`/tv/${id}/similar`);
+export const getMovieVideos = (id: number) => tmdbFetch(`/movie/${id}/videos`);
+export const getTVVideos = (id: number) => tmdbFetch(`/tv/${id}/videos`);
+export const getTVSeasonEpisodes = (tvId: number, season: number) =>
+  tmdbFetch(`/tv/${tvId}/season/${season}`);
+
 export interface TMDBItem {
   id: number;
   title?: string;
