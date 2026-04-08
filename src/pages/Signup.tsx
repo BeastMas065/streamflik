@@ -286,7 +286,7 @@ const Signup = () => {
 const RedirectTimer = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const t = setTimeout(() => navigate("/browse"), 2000);
+    const t = setTimeout(() => navigate("/profiles"), 2000);
     return () => clearTimeout(t);
   }, [navigate]);
   return null;

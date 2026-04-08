@@ -36,7 +36,7 @@ const Login = () => {
       return;
     }
 
-    navigate("/browse");
+    navigate("/profiles");
   };
 
   return (
