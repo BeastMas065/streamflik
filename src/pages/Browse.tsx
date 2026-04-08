@@ -4,28 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfileStore } from "@/store/profileStore";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  getTrending,
-  getTopRated,
-  getNowPlaying,
-  getPopularTV,
-  getByGenre,
-} from "@/services/tmdb";
+import { useTMDBRows } from "@/hooks/useTMDBRows";
 import BrowseNavbar from "@/components/browse/BrowseNavbar";
 import HeroBillboard from "@/components/browse/HeroBillboard";
 import ContentRow from "@/components/browse/ContentRow";
-
-const ROWS = [
-  { key: "trending", title: "Trending Now", fn: getTrending },
-  { key: "topRated", title: "Top Rated Movies", fn: getTopRated },
-  { key: "nowPlaying", title: "New Releases", fn: getNowPlaying },
-  { key: "popularTV", title: "Popular on Streamflix", fn: getPopularTV },
-  { key: "action", title: "Action & Adventure", fn: () => getByGenre(28) },
-  { key: "comedy", title: "Comedies", fn: () => getByGenre(35) },
-  { key: "documentary", title: "Documentaries", fn: () => getByGenre(99) },
-  { key: "horror", title: "Horror", fn: () => getByGenre(27) },
-  { key: "romance", title: "Romantic Movies", fn: () => getByGenre(10749) },
-];
 
 const Browse = () => {
   const { user, loading: authLoading } = useAuth();
@@ -37,15 +19,7 @@ const Browse = () => {
     else if (!authLoading && user && !selectedProfile) navigate("/profiles");
   }, [authLoading, user, selectedProfile, navigate]);
 
-  // Fetch all rows
-  const rowQueries = ROWS.map((row) =>
-    useQuery({
-      queryKey: [row.key],
-      queryFn: row.fn,
-      staleTime: 1000 * 60 * 10,
-      enabled: !!user,
-    })
-  );
+  const rows = useTMDBRows(!!user);
 
   // Fetch My List
   const { data: myListData, isLoading: myListLoading } = useQuery({
@@ -64,7 +38,6 @@ const Browse = () => {
 
   const myListIds = new Set((myListData ?? []).map((item) => item.tmdb_id));
 
-  // Convert my_list items to TMDBItem format for the row
   const myListItems = (myListData ?? []).map((item) => ({
     id: item.tmdb_id,
     title: item.title,
@@ -84,12 +57,12 @@ const Browse = () => {
       <BrowseNavbar />
       <HeroBillboard />
       <div className="-mt-24 relative z-10">
-        {ROWS.map((row, i) => (
+        {rows.map((row) => (
           <ContentRow
-            key={row.key}
+            key={row.title}
             title={row.title}
-            items={rowQueries[i].data?.results ?? []}
-            isLoading={rowQueries[i].isLoading}
+            items={row.data}
+            isLoading={row.isLoading}
             myListIds={myListIds}
           />
         ))}
