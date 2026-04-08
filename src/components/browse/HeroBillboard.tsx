@@ -66,7 +66,10 @@ const HeroBillboard = () => {
             <Play size={20} fill="currentColor" />
             Play
           </button>
-          <button className="flex items-center gap-2 bg-muted-foreground/30 text-foreground font-semibold px-6 py-2.5 rounded hover:bg-muted-foreground/20 transition-colors text-sm md:text-base backdrop-blur-sm">
+          <button
+            onClick={() => featured && openModal(featured)}
+            className="flex items-center gap-2 bg-muted-foreground/30 text-foreground font-semibold px-6 py-2.5 rounded hover:bg-muted-foreground/20 transition-colors text-sm md:text-base backdrop-blur-sm"
+          >
             <Info size={20} />
             More Info
           </button>

@@ -118,7 +118,10 @@ const MovieCard = ({ item, index, totalVisible, isInList }: MovieCardProps) => {
                 <button className="w-8 h-8 rounded-full border-2 border-muted-foreground/60 text-foreground flex items-center justify-center hover:border-foreground transition-colors">
                   <ThumbsUp size={16} />
                 </button>
-                <button className="w-8 h-8 rounded-full border-2 border-muted-foreground/60 text-foreground flex items-center justify-center hover:border-foreground transition-colors ml-auto">
+                <button
+                  onClick={() => openModal(item)}
+                  className="w-8 h-8 rounded-full border-2 border-muted-foreground/60 text-foreground flex items-center justify-center hover:border-foreground transition-colors ml-auto"
+                >
                   <ChevronDown size={16} />
                 </button>
               </div>
