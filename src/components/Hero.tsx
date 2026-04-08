@@ -1,7 +1,20 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+
+  const handleGetStarted = () => {
+    if (email.trim()) {
+      navigate(`/signup?email=${encodeURIComponent(email)}`);
+    } else {
+      navigate("/signup");
+    }
+  };
+
   return (
     <section className="relative min-h-[85vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Gradient background */}
@@ -24,12 +37,16 @@ const Hero = () => {
           <input
             type="email"
             placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleGetStarted()}
             className="w-full sm:flex-1 h-12 md:h-14 px-4 rounded-sm sm:rounded-r-none border border-foreground/30 bg-background/60 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-base"
           />
           <Button
             variant="hero"
             size="xl"
             className="w-full sm:w-auto sm:rounded-l-none flex items-center justify-center gap-2"
+            onClick={handleGetStarted}
           >
             Get Started
             <ChevronRight size={24} />
