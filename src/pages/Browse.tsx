@@ -76,6 +76,7 @@ const Browse = () => {
           />
         )}
       </div>
+      <DetailModal />
     </div>
   );
 };
