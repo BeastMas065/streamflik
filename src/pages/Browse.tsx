@@ -8,6 +8,7 @@ import { useTMDBRows } from "@/hooks/useTMDBRows";
 import BrowseNavbar from "@/components/browse/BrowseNavbar";
 import HeroBillboard from "@/components/browse/HeroBillboard";
 import ContentRow from "@/components/browse/ContentRow";
+import DetailModal from "@/components/browse/DetailModal";
 
 const Browse = () => {
   const { user, loading: authLoading } = useAuth();
@@ -75,6 +76,7 @@ const Browse = () => {
           />
         )}
       </div>
+      <DetailModal />
     </div>
   );
 };

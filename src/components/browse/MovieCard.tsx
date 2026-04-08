@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfileStore } from "@/store/profileStore";
 import { useQueryClient } from "@tanstack/react-query";
+import { useDetailModalStore } from "@/store/detailModalStore";
 
 interface MovieCardProps {
   item: TMDBItem;
@@ -25,6 +26,7 @@ const MovieCard = ({ item, index, totalVisible, isInList }: MovieCardProps) => {
   const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
   const { selectedProfile } = useProfileStore();
   const queryClient = useQueryClient();
+  const { openModal } = useDetailModalStore();
 
   const title = item.title ?? item.name ?? "Untitled";
   const year = (item.release_date ?? item.first_air_date ?? "").slice(0, 4);
@@ -116,7 +118,10 @@ const MovieCard = ({ item, index, totalVisible, isInList }: MovieCardProps) => {
                 <button className="w-8 h-8 rounded-full border-2 border-muted-foreground/60 text-foreground flex items-center justify-center hover:border-foreground transition-colors">
                   <ThumbsUp size={16} />
                 </button>
-                <button className="w-8 h-8 rounded-full border-2 border-muted-foreground/60 text-foreground flex items-center justify-center hover:border-foreground transition-colors ml-auto">
+                <button
+                  onClick={() => openModal(item)}
+                  className="w-8 h-8 rounded-full border-2 border-muted-foreground/60 text-foreground flex items-center justify-center hover:border-foreground transition-colors ml-auto"
+                >
                   <ChevronDown size={16} />
                 </button>
               </div>
