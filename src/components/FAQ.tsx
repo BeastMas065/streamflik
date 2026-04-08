@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Plus, X, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,8 +33,18 @@ const faqItems = [
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const toggle = (i: number) => setOpenIndex(openIndex === i ? null : i);
+
+  const handleGetStarted = () => {
+    if (email.trim()) {
+      navigate(`/signup?email=${encodeURIComponent(email)}`);
+    } else {
+      navigate("/signup");
+    }
+  };
 
   return (
     <section className="py-12 md:py-20 border-t-8 border-[hsl(0,0%,13%)]">
@@ -80,12 +91,16 @@ const FAQ = () => {
             <input
               type="email"
               placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleGetStarted()}
               className="w-full sm:flex-1 h-12 md:h-14 px-4 rounded-sm sm:rounded-r-none border border-foreground/30 bg-background/60 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary text-base"
             />
             <Button
               variant="hero"
               size="xl"
               className="w-full sm:w-auto sm:rounded-l-none flex items-center justify-center gap-2"
+              onClick={handleGetStarted}
             >
               Get Started
               <ChevronRight size={24} />

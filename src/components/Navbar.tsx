@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Globe, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -21,9 +22,9 @@ const Navbar = () => {
     >
       <div className="max-w-[1400px] mx-auto flex items-center justify-between px-4 md:px-8 h-16 md:h-20">
         {/* Logo */}
-        <span className="text-primary font-black text-2xl md:text-3xl tracking-tighter select-none">
+        <Link to="/" className="text-primary font-black text-2xl md:text-3xl tracking-tighter select-none">
           STREAMFLIX
-        </span>
+        </Link>
 
         {/* Desktop right side */}
         <div className="hidden md:flex items-center gap-3">
@@ -31,8 +32,8 @@ const Navbar = () => {
             <Globe size={16} />
             English
           </button>
-          <Button variant="signin" size="sm">
-            Sign In
+          <Button variant="signin" size="sm" asChild>
+            <Link to="/login">Sign In</Link>
           </Button>
         </div>
 
@@ -60,8 +61,8 @@ const Navbar = () => {
                 <Globe size={16} />
                 English
               </button>
-              <Button variant="signin" size="sm" className="w-fit">
-                Sign In
+              <Button variant="signin" size="sm" className="w-fit" asChild>
+                <Link to="/login">Sign In</Link>
               </Button>
             </div>
           </motion.div>
